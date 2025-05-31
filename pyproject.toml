@@ -1,14 +1,33 @@
-[project]
+[tool.poetry]
 name = "mcfp"
 version = "0.1.0"
 description = ""
-authors = [{ name = "yuyi2439", email = "yuyi2439@qq.com" }]
-license = { text = "MIT" }
+authors = ["Yuyi2439 <yuyi2439@qq.com>"]
+license = "MIT"
+
+homepage = "https://github.com/yuyi2439/mcfp"
+repository = "https://github.com/yuyi2439/mcfp"
+documentation = "https://github.com/yuyi2439/mcfp"
+
 readme = "README.md"
-requires-python = ">=3.11"
+
+keywords = [
+    "minecraft",
+    "minecraft-commands",
+    "mcfunction"
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
+
+[tool.black]
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

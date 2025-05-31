@@ -1,0 +1,58 @@
+name: Publish Python Package
+
+on:
+  push:
+    tags:
+      - 'v*'  # 匹配所有 v 开头的标签，如 v1.0.0
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # 必须获取标签信息
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Configure Poetry
+        run: |
+          # 使用虚拟环境（推荐）
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Build package
+        run: poetry build
+
+      - name: Extract version from tag
+        id: extract_version
+        run: |
+          # 从标签中提取版本号 (移除 'v' 前缀)
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Verify version consistency
+        run: |
+          # 检查标签版本与 pyproject.toml 是否一致
+          TAG_VERSION="${{ steps.extract_version.outputs.version }}"
+          POETRY_VERSION=$(poetry version -s)
+          
+          if [ "$TAG_VERSION" != "$POETRY_VERSION" ]; then
+            echo "❌ 版本不匹配: 标签版本 ($TAG_VERSION) 与 pyproject.toml ($POETRY_VERSION) 不一致"
+            exit 1
+          fi
+
+      - name: Publish to PyPI
+        run: poetry publish -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}
