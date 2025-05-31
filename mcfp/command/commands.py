@@ -1,7 +1,25 @@
 from dataclasses import dataclass
 from typing import Optional
+from mcfp.command import Selector
+from mcfp.compiler import Compiler
 
-from ..command import CommandBase, Selector
+
+class CommandBase:
+    def __str__(self) -> str:
+        raise NotImplementedError("Subclasses must implement __str__ method")
+
+    def __call__(self):
+        Compiler.add_command(str(self))
+
+
+@dataclass
+class Command(CommandBase):
+    command: str
+    args: Optional[list[str]]
+
+    def __str__(self) -> str:
+        return f"{self.command} {' '.join(self.args) if self.args else ''}".strip()
+    
 
 
 @dataclass
@@ -59,6 +77,7 @@ class Scoreboard(CommandBase):
             raise ValueError(f"Invalid scoreboard operation: {self.operation}")
 
 __all__ = [
+    'Command',
     'SetBlock',
     'Function',
     'Say',
