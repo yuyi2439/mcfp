@@ -17,13 +17,22 @@ class Selector:
         return f"@{self.target}[{args}]"
 
 
-class Command:
+class CommandBase:
     def __str__(self) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError("Subclasses must implement __str__ method")
 
+
+@dataclass
+class Command(CommandBase):
+    command: str
+    args: Optional[list[str]]
+
+    def __str__(self) -> str:
+        return f"{self.command} {' '.join(self.args) if self.args else ''}".strip()
 
 
 __all__ = [
+    'Command',
     'SetBlock',
     'Execute',
     'Function',

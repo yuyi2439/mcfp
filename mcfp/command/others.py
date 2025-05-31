@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from ..command import Command, Selector
+from ..command import CommandBase, Selector
 
 
 @dataclass
-class SetBlock(Command):
+class SetBlock(CommandBase):
     x: int | str
     y: int | str
     z: int | str
@@ -21,7 +21,7 @@ class SetBlock(Command):
 
 
 @dataclass
-class Function(Command):
+class Function(CommandBase):
     namespace: str
     name: str
 
@@ -30,7 +30,7 @@ class Function(Command):
 
 
 @dataclass
-class Say(Command):
+class Say(CommandBase):
     message: str
 
     def __str__(self) -> str:
@@ -38,7 +38,7 @@ class Say(Command):
 
 
 @dataclass
-class Scoreboard(Command):
+class Scoreboard(CommandBase):
     operation: str
     objective: str
     target: str | Selector

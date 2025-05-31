@@ -1,4 +1,9 @@
-from mcfp import *
+from mcfp.command import *
 
-Say("Hello, world!")
-SetBlock(0, 0, 0, "minecraft:stone")
+# 简单的命令序列
+Say("Hello Minecraft world!")
+SetBlock(0, 64, 0, "minecraft:stone")
+SetBlock(1, 64, 0, "minecraft:dirt")
+
+# 稍复杂的命令
+Execute([('at', Selector('s'))], Say("Executing from entity"))

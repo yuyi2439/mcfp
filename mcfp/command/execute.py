@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
-from . import Command, Selector
+from . import CommandBase, Selector
 
 
 @dataclass
-class Execute(Command):
+class Execute(CommandBase):
     subcommands: list[tuple[str, str | Selector]]
-    then: Command
+    then: CommandBase
 
     def __str__(self) -> str:
         execute_str = "execute"
