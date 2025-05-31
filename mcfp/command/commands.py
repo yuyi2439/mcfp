@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Iterable, Optional
 from mcfp.command import Selector
+from mcfp.command.util import Position
 from mcfp.compiler import Compiler
 
 
@@ -15,7 +16,7 @@ class CommandBase:
 @dataclass
 class Command(CommandBase):
     command: str
-    args: Optional[list[str]]
+    args: Optional[Iterable[str]]
 
     def __str__(self) -> str:
         return f"{self.command} {' '.join(self.args) if self.args else ''}".strip()
@@ -24,9 +25,7 @@ class Command(CommandBase):
 
 @dataclass
 class SetBlock(CommandBase):
-    x: int | str
-    y: int | str
-    z: int | str
+    pos: Position
     block: str
     state: str = ""
     mode: str = "replace"
@@ -34,7 +33,7 @@ class SetBlock(CommandBase):
     def __str__(self) -> str:
         state_str = f"[{self.state}]" if self.state else ""
         return (
-            f"setblock {self.x} {self.y} {self.z} {self.block}{state_str} {self.mode}"
+            f"setblock {str(self.pos)} {self.block}{state_str} {self.mode}"
         )
 
 

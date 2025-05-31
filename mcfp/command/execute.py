@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from mcfp.command.commands import CommandBase
-from mcfp.command.selector import Selector
+from mcfp.command.util import Selector
 
 
 @dataclass

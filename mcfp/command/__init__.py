@@ -1,14 +1,14 @@
-from .selector import Selector
+from .util import Selector
 from .commands import *
 from .execute import Execute
 
 
 __all__ = [
     'Command',
+    'Say',
     'SetBlock',
     'Execute',
     'Function',
-    'Say',
     'Scoreboard',
     'Selector',
 ]
