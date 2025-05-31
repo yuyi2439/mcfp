@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable, Optional
-from mcfp.command import Selector
-from mcfp.command.util import Position
+
+from mcfp.command.util import Position, Selector
 from mcfp.compiler import Compiler
 
 
@@ -20,7 +20,6 @@ class Command(CommandBase):
 
     def __str__(self) -> str:
         return f"{self.command} {' '.join(self.args) if self.args else ''}".strip()
-    
 
 
 @dataclass
@@ -32,9 +31,7 @@ class SetBlock(CommandBase):
 
     def __str__(self) -> str:
         state_str = f"[{self.state}]" if self.state else ""
-        return (
-            f"setblock {str(self.pos)} {self.block}{state_str} {self.mode}"
-        )
+        return f"setblock {str(self.pos)} {self.block}{state_str} {self.mode}"
 
 
 @dataclass
@@ -74,6 +71,7 @@ class Scoreboard(CommandBase):
             )
         else:
             raise ValueError(f"Invalid scoreboard operation: {self.operation}")
+
 
 __all__ = [
     'Command',
