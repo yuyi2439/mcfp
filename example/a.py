@@ -7,3 +7,5 @@ SetBlock(1, 64, 0, "minecraft:dirt")
 
 # 稍复杂的命令
 Execute([('at', Selector('s'))], Say("Executing from entity"))
+
+cmd = Function("example", "my_function")
