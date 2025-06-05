@@ -5,7 +5,7 @@ from .util import Selector
 __all__ = [
     'Command',
     'Say',
-    'SetBlock',
+    'setblock',
     'Execute',
     'Function',
     'Scoreboard',

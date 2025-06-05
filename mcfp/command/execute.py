@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Self
 
 from mcfp.command.commands import CommandBase
 from mcfp.command.util import Entity, Selector
@@ -19,21 +19,21 @@ class Execute(CommandBase):
         ), 'Execute command must have a "then" command to run.'
         return f'{execute_str} run {str(self.then)}'
 
-    def run(self, then: CommandBase) -> 'Execute':
+    def run(self, then: CommandBase) -> Self:
         """
         Add a `run` subcommand to the execute command.
         """
         self.then = then
         return self
 
-    def as_(self, selector: Entity) -> 'Execute':
+    def as_(self, selector: Entity) -> Self:
         """
         Add an `as` subcommand to the execute command.
         """
         self.subcommands.append(('as', (selector,)))
         return self
 
-    def at(self, selector: Entity) -> 'Execute':
+    def at(self, selector: Entity) -> Self:
         """
         Add an `at` subcommand to the execute command.
         """

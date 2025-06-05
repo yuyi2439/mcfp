@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import singledispatch
 from typing import Iterable, Optional
 
 from mcfp.command.util import Position, Selector
@@ -73,9 +74,31 @@ class Scoreboard(CommandBase):
             raise ValueError(f'Invalid scoreboard operation: {self.operation}')
 
 
+@singledispatch
+def setblock(arg, *args, **kwargs) -> SetBlock:
+    raise TypeError("不支持的参数类型")
+
+
+@setblock.register
+def _(pos: Position, block: str, state: str = '', mode: str = 'replace'):
+    return SetBlock(pos, block, state, mode)
+
+
+@setblock.register
+def _(pos_tuple: tuple, block: str, state: str = '', mode: str = 'replace'):
+    if len(pos_tuple) != 3:
+        raise TypeError("坐标tuple长度必须为3")
+    return SetBlock(Position(*pos_tuple), block, state, mode)
+
+
+@setblock.register
+def _(x: int, y: int, z: int, block: str, state: str = '', mode: str = 'replace'):
+    return SetBlock(Position(x, y, z), block, state, mode)
+
+
 __all__ = [
     'Command',
-    'SetBlock',
+    'setblock',
     'Function',
     'Say',
     'Scoreboard',
