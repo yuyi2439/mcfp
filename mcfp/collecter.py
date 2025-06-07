@@ -12,15 +12,6 @@ class Collecter:
         cls.commands.append(command)
 
     @classmethod
-    @contextmanager
-    def collect(cls):
-        cls._collecting = True
-        try:
-            yield
-        finally:
-            cls._collecting = False
-
-    @classmethod
     def save_commands(cls, filename: Optional[str] = None):
         if filename is None:
             filename = inspect.currentframe().f_back.f_code.co_filename  # type: ignore
@@ -29,6 +20,16 @@ class Collecter:
         with open(filename, 'w', encoding='utf8') as file:
             for command in cls.commands:
                 file.write(command + '\n')
+        cls.commands.clear()
+
+    @classmethod
+    @contextmanager
+    def collect(cls):
+        cls._collecting = True
+        try:
+            yield
+        finally:
+            cls._collecting = False
 
     @classmethod
     def try_collect_command(cls, command: object):

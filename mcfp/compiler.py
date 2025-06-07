@@ -28,10 +28,10 @@ class CommandTransformer(ast.NodeTransformer):
         return node
 
 
-def compile_and_run(filename: str):
-    with open(filename, 'r', encoding='utf8') as file:
+def compile_and_run(fpath: str):
+    with open(fpath, 'r', encoding='utf8') as file:
         file = file.read()
     tree = ast.parse(file)
     tree = CommandTransformer().visit(tree)
     ast.fix_missing_locations(tree)
-    exec(compile(tree, filename=filename, mode="exec"))
+    exec(compile(tree, filename=fpath, mode="exec"))
