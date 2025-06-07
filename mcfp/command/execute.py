@@ -2,13 +2,13 @@ from dataclasses import dataclass, field
 from typing import Optional, Self
 
 from mcfp.command.commands import CommandBase
-from mcfp.command.util import Entity, Selector
+from mcfp.command.util import Entity
 
 
 @dataclass
 class Execute(CommandBase):
     then: Optional[CommandBase] = None
-    subcommands: list[tuple[str, tuple[str | Selector]]] = field(default_factory=list)
+    subcommands: list[tuple[str, tuple[str | Entity]]] = field(default_factory=list)
 
     def __str__(self) -> str:
         execute_str = 'execute'
