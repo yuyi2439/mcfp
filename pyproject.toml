@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mcfp"
-version = "0.1.0"
+version = "0.1.1"
 description = "A py -> mcfunction transformer"
 authors = ["Yuyi2439 <yuyi2439@qq.com>"]
 license = "MIT"
