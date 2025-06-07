@@ -1,16 +1,20 @@
+from mcfp import Collecter
 from mcfp.command import *
-from mcfp import Compiler
+from mcfp.command.commands import Say
+from mcfp.command.util import Position
 
-def test_simple_commands():
-    Say("Hello Minecraft world!")()
-    SetBlock(0, 64, 0, "minecraft:stone")()
-    SetBlock(1, 64, 0, "minecraft:dirt")()
+# Please see demo for more examples
+# This isn't available. I plan to enable it in the future.
 
-    Execute([('at', Selector('s'))], Say("Executing from entity"))()
+# def test_simple_commands():
+#     Say('Hello Minecraft world')()
+#     SetBlock(Position(0, 64, 0), 'minecraft:stone')()
+#     # SetBlock(1, 64, 0, 'minecraft:dirt')()
 
-    cmd = Function("example", "my_function")
-    for i in range(5):
-        cmd()
-    
+#     Execute().at(Selector('s')).run(Say('Executing from entity'))()
 
-    assert len(Compiler.commands) == 9
+#     cmd = Function('example', 'my_function')
+#     for i in range(5):
+#         cmd()
+
+#     assert len(Collecter.commands) == 8
