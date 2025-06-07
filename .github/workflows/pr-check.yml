@@ -1,0 +1,31 @@
+name: PR Check
+
+on:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Check poetry.lock consistency
+        run: poetry lock --check
+
+      - name: Check isort
+        run: poetry run isort . --check --diff
+
+      - name: Check black
+        run: poetry run black . --skip-string-normalization --check --diff
