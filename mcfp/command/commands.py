@@ -3,7 +3,6 @@ from functools import singledispatch
 from typing import Iterable, Optional
 
 from mcfp.command.util import Position, Selector
-from mcfp.compiler import Compiler
 
 
 class CommandBase:
@@ -11,7 +10,9 @@ class CommandBase:
         raise NotImplementedError('Subclasses must implement __str__ method')
 
     def __call__(self):
-        Compiler.add_command(str(self))
+        from mcfp.collecter import Collecter
+
+        Collecter.add_command(str(self))
 
 
 @dataclass
@@ -37,8 +38,8 @@ class SetBlock(CommandBase):
 
 @dataclass
 class Function(CommandBase):
-    namespace: str
     name: str
+    namespace: str
 
     def __str__(self) -> str:
         return f'function {self.namespace}:{self.name}'
