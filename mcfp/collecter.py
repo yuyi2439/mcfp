@@ -1,6 +1,6 @@
 import inspect
 from contextlib import contextmanager
-from typing import Optional
+from pathlib import Path
 
 
 class Collecter:
@@ -12,14 +12,22 @@ class Collecter:
         cls.commands.append(command)
 
     @classmethod
-    def save_commands(cls, filename: Optional[str] = None):
+    def save_commands(cls, filename: str | None = None):
+        """save collected commands to a file.
+
+        Args:
+            filename (str, optional): filename('mcfunction' as suffix). Defaults to the filename of the caller.
+        """
         if filename is None:
             filename = inspect.currentframe().f_back.f_code.co_filename  # type: ignore
+            filename = filename.replace('.py', '.mcfunction')
 
-        filename = filename.replace('.py', '.mcfunction')
-        with open(filename, 'w', encoding='utf8') as file:
-            for command in cls.commands:
-                file.write(command + '\n')
+        fpath = Path(filename)
+        target_path = fpath.parent / 'target' / fpath.name
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        target_path.write_text(
+            '\n'.join([cmd for cmd in cls.commands]), encoding='utf8'
+        )
         cls.commands.clear()
 
     @classmethod

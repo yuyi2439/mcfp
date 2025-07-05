@@ -1,11 +1,12 @@
-import os
+from pathlib import Path
 
 from mcfp import compile_and_run
 
-current_dir = os.path.dirname(__file__)
-current_file = os.path.basename(__file__)
+DEBUG = True
 
-for fname in os.listdir(current_dir):
-    if fname.endswith('.py') and fname != current_file:
-        full_path = os.path.join(current_dir, fname)
-        compile_and_run(full_path)
+fpath = Path(__file__).resolve()
+
+for fp in fpath.parent.rglob('*.py'):
+    fname = fp.name
+    if not fname.startswith('_'):
+        compile_and_run(fpath.with_name(fname), debug=DEBUG)
