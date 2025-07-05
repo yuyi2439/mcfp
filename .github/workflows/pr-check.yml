@@ -19,7 +19,7 @@ jobs:
         run: pipx install poetry
 
       - name: Install dependencies
-        run: poetry install --no-interaction
+        run: poetry install --extras=dev
 
       - name: Check poetry.lock consistency
         run: poetry check

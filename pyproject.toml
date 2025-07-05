@@ -13,7 +13,6 @@ Homepage = "https://github.com/yuyi2439/mcfp"
 Repository = "https://github.com/yuyi2439/mcfp"
 Documentation = "https://github.com/yuyi2439/mcfp"
 
-
 [project.optional-dependencies]
 dev = ["pytest>=8.3.5,<9.0.0", "isort>=6.0.1,<7.0.0", "black>=25.1.0,<26.0.0"]
 
