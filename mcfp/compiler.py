@@ -1,4 +1,7 @@
 import ast
+import inspect
+import textwrap
+from pathlib import Path
 
 
 class CommandTransformer(ast.NodeTransformer):
@@ -28,10 +31,32 @@ class CommandTransformer(ast.NodeTransformer):
         return node
 
 
-def compile_and_run(fpath: str):
-    with open(fpath, 'r', encoding='utf8') as file:
-        file = file.read()
-    tree = ast.parse(file)
+def patch_save_commands(tree: ast.Module, fpath: Path) -> ast.Module:
+    def _patch():
+        from mcfp.collecter import Collecter
+
+        Collecter.save_commands('{filename}')
+
+    stmt = inspect.getsource(_patch).format(
+        filename=fpath.with_suffix('.mcfunction').name
+    )
+    stmt = textwrap.dedent(stmt).strip()
+    body = ast.parse(stmt).body[0].body  # type: ignore
+    tree.body.extend(body)
+    return tree
+
+
+def compile_to_str(fpath: Path) -> str:
+    code = fpath.read_text(encoding='utf8')
+    tree = ast.parse(code)
+    tree = patch_save_commands(tree, fpath)
     tree = CommandTransformer().visit(tree)
     ast.fix_missing_locations(tree)
-    exec(compile(tree, filename=fpath, mode="exec"))
+    return ast.unparse(tree)
+
+
+def compile_and_run(fpath: Path, debug: bool = False):
+    code_str = compile_to_str(fpath)
+    if debug:
+        fpath.with_stem('_gen_' + fpath.stem).write_text(code_str, encoding='utf8')
+    exec(code_str)

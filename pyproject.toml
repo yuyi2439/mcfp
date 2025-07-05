@@ -1,25 +1,20 @@
-[tool.poetry]
+[project]
 name = "mcfp"
-version = "0.1.1"
+version = "0.1.2"
 description = "A py -> mcfunction transformer"
-authors = ["Yuyi2439 <yuyi2439@qq.com>"]
+authors = [{ name = "yuyi2439", email = "yuyi2439@qq.com" }]
 license = "MIT"
-
-homepage = "https://github.com/yuyi2439/mcfp"
-repository = "https://github.com/yuyi2439/mcfp"
-documentation = "https://github.com/yuyi2439/mcfp"
-
 readme = "README.md"
-
 keywords = ["minecraft", "minecraft-commands", "mcfunction"]
+requires-python = ">=3.11"
 
-[tool.poetry.dependencies]
-python = "^3.11"
+[project.urls]
+Homepage = "https://github.com/yuyi2439/mcfp"
+Repository = "https://github.com/yuyi2439/mcfp"
+Documentation = "https://github.com/yuyi2439/mcfp"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
-isort = "^6.0.1"
-black = "^25.1.0"
+[project.optional-dependencies]
+dev = ["pytest>=8.3.5,<9.0.0", "isort>=6.0.1,<7.0.0", "black>=25.1.0,<26.0.0"]
 
 [tool.black]
 target-version = ["py311"]

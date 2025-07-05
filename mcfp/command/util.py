@@ -16,7 +16,7 @@ class Selector:
         return f'@{self.target}[{args}]'
 
 
-Entity = Selector  # Can also be str(player name) or str(entity UUID)  TODO
+Entity = Selector | str  # Can also be str(player name) or str(entity UUID)  TODO
 
 
 @dataclass
