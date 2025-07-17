@@ -1,7 +1,9 @@
+import json
 from dataclasses import dataclass
 from functools import singledispatch
 from typing import Iterable, Optional
 
+from mcfp import NameSpace
 from mcfp.command.util import Position, Selector
 
 
@@ -39,10 +41,15 @@ class SetBlock(CommandBase):
 @dataclass
 class Function(CommandBase):
     name: str
-    namespace: str
+    args: dict[str, str] | None = None
+    namespace: str = NameSpace.get()
 
     def __str__(self) -> str:
-        return f'function {self.namespace}:{self.name}'
+        cmd = f'function {self.namespace}:{self.name}'
+        if self.args:
+            args_str = json.dumps(self.args)
+            cmd += f' {args_str}'
+        return cmd
 
 
 @dataclass

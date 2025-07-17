@@ -1,8 +1,9 @@
-from mcfp import Collecter
+from mcfp import NameSpace
+from mcfp.collecter import Collecter
 from mcfp.command import *
-from mcfp.command.util import Position
+from mcfp.command.util import Position, Selector
 
-NAMESPACE = 'demo'
+NameSpace.set('demo')
 
 Say('Hello Minecraft world!')()
 
@@ -19,6 +20,6 @@ with Collecter.collect():
     Execute().at('@s').run(Say('Executing from entity'))
 
 
-cmd = Function('b', NAMESPACE)
+cmd = Function('b')
 for i in range(2):
     cmd()

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Generic, Optional, TypeVar
 
+from mcfp import NameSpace
+
 T = TypeVar('T')
 
 
@@ -16,7 +18,7 @@ class Selector:
         return f'@{self.target}[{args}]'
 
 
-Entity = Selector | str  # Can also be str(player name) or str(entity UUID)  TODO
+Entity = Selector | str
 
 
 @dataclass
@@ -27,6 +29,18 @@ class Position:
 
     def __str__(self):
         return f'{self.x} {self.y} {self.z}'
+
+
+@dataclass
+class Storage:
+    name: str
+    namespace: str = NameSpace.get()
+
+    def __str__(self):
+        return f'storage {self.namespace}:{self.name}'
+
+
+Target = Position | Entity | Storage
 
 
 @dataclass

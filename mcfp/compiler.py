@@ -1,14 +1,17 @@
 import ast
 import inspect
+import shutil
 import textwrap
 from pathlib import Path
+
+import mcfp
 
 
 class CommandTransformer(ast.NodeTransformer):
     def visit_With(self, node):
         body = []
         body.append(
-            ast.ImportFrom(module='mcfp', names=[ast.alias(name='Collecter')], level=0),
+            ast.ImportFrom(module='mcfp.collecter', names=[ast.alias(name='Collecter')], level=0),
         )
         for n in node.body:
             if isinstance(n, ast.Expr) and isinstance(n.value, ast.Call):
@@ -31,14 +34,14 @@ class CommandTransformer(ast.NodeTransformer):
         return node
 
 
-def patch_save_commands(tree: ast.Module, fpath: Path) -> ast.Module:
+def patch_save_commands(tree: ast.Module, relative_path: Path) -> ast.Module:
     def _patch():
         from mcfp.collecter import Collecter
 
-        Collecter.save_commands('{filename}')
+        Collecter.save_commands(r'{relative_path}')
 
     stmt = inspect.getsource(_patch).format(
-        filename=fpath.with_suffix('.mcfunction').name
+        relative_path=relative_path.with_suffix('.mcfunction')
     )
     stmt = textwrap.dedent(stmt).strip()
     body = ast.parse(stmt).body[0].body  # type: ignore
@@ -46,17 +49,42 @@ def patch_save_commands(tree: ast.Module, fpath: Path) -> ast.Module:
     return tree
 
 
-def compile_to_str(fpath: Path) -> str:
-    code = fpath.read_text(encoding='utf8')
+def compile2str(dir: Path, relative_path: Path) -> str:
+    code = (dir / relative_path).read_text(encoding='utf8')
     tree = ast.parse(code)
-    tree = patch_save_commands(tree, fpath)
+    tree = patch_save_commands(tree, relative_path)
     tree = CommandTransformer().visit(tree)
     ast.fix_missing_locations(tree)
     return ast.unparse(tree)
 
 
-def compile_and_run(fpath: Path, debug: bool = False):
-    code_str = compile_to_str(fpath)
-    if debug:
+def compile(fpath: Path, dir: Path):
+    dir = Path(dir)
+    code_str = compile2str(dir, fpath.relative_to(dir))
+    if mcfp.DEBUG:
         fpath.with_stem('_gen_' + fpath.stem).write_text(code_str, encoding='utf8')
     exec(code_str)
+
+
+def compile_all(dir: Path):
+    shutil.rmtree(mcfp.TargetPath.get())
+    for fpath in dir.rglob('*.py'):
+        if not fpath.name.startswith('_'):
+            compile(fpath, dir)
+    copy_built_ins()
+
+
+def copy_built_ins(target: Path | None = None):
+    if target is None:
+        target = mcfp.TargetPath.get()
+    built_in_dir = target / 'mcfp_gen' / 'function' / 'built_ins'
+    shutil.rmtree(built_in_dir, ignore_errors=True)
+    shutil.copytree(
+        Path(__file__).parent / '_built_in',
+        built_in_dir,
+        dirs_exist_ok=True,
+    )
+    from mcfp import DEBUG
+
+    if not DEBUG:
+        shutil.rmtree(built_in_dir / '_debug')
