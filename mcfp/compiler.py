@@ -11,7 +11,9 @@ class CommandTransformer(ast.NodeTransformer):
     def visit_With(self, node):
         body = []
         body.append(
-            ast.ImportFrom(module='mcfp.collecter', names=[ast.alias(name='Collecter')], level=0),
+            ast.ImportFrom(
+                module='mcfp.collecter', names=[ast.alias(name='Collecter')], level=0
+            ),
         )
         for n in node.body:
             if isinstance(n, ast.Expr) and isinstance(n.value, ast.Call):

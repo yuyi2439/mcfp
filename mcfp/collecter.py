@@ -15,7 +15,12 @@ class Collecter:
     @classmethod
     def save_commands(cls, relative_fpath: str):
         """Save collected commands to a file."""
-        target_path = mcfp.TargetPath.get() / mcfp.NameSpace.get() / 'function' / Path(relative_fpath)
+        target_path = (
+            mcfp.TargetPath.get()
+            / mcfp.NameSpace.get()
+            / 'function'
+            / Path(relative_fpath)
+        )
 
         target_path.parent.mkdir(parents=True, exist_ok=True)
         target_path.write_text(
