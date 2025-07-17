@@ -1,12 +1,13 @@
 from pathlib import Path
 
-from mcfp import compile_and_run
+import mcfp
+from mcfp.compiler import compile_all
 
-DEBUG = True
+# mcfp.DEBUG = True
 
-fpath = Path(__file__).resolve()
+dir_path = Path(__file__).parent
 
-for fp in fpath.parent.rglob('*.py'):
-    fname = fp.name
-    if not fname.startswith('_'):
-        compile_and_run(fpath.with_name(fname), debug=DEBUG)
+mcfp.NameSpace.set('demo')
+mcfp.TargetPath.set(dir_path)
+
+compile_all(dir_path)

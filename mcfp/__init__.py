@@ -1,9 +1,30 @@
-from .collecter import Collecter
-from .compiler import compile_and_run
+from pathlib import Path
 
-__version__ = '0.1.0'
+DEBUG = False
 
-__all__ = [
-    'Collecter',
-    'compile_and_run',
-]
+
+class NameSpace:
+    namespace = 'mcfp_generated'
+
+    @classmethod
+    def set(cls, namespace: str):
+        cls.namespace = namespace
+
+    @classmethod
+    def get(cls) -> str:
+        return cls.namespace
+
+
+class TargetPath:
+    target_path = Path('.target')
+
+    @classmethod
+    def set(cls, path: Path, patch: bool = True):
+        cls.target_path = path / '.target' if patch else path
+
+    @classmethod
+    def get(cls) -> Path:
+        return cls.target_path
+
+
+__version__ = (0, 1, 3)
