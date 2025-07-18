@@ -2,15 +2,18 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import mcfp
+from mcfp import command as command
+from mcfp.command.util import Storage
+from mcfp.data_struct import Var
 
 
 class Collecter:
-    commands: list[str] = []
+    cmds: list[str] = []
     _collecting = False
 
     @classmethod
-    def add_command(cls, command: str):
-        cls.commands.append(command)
+    def add_command(cls, cmd: str):
+        cls.cmds.append(cmd)
 
     @classmethod
     def save_commands(cls, relative_fpath: str):
@@ -23,10 +26,8 @@ class Collecter:
         )
 
         target_path.parent.mkdir(parents=True, exist_ok=True)
-        target_path.write_text(
-            '\n'.join([cmd for cmd in cls.commands]), encoding='utf8'
-        )
-        cls.commands.clear()
+        target_path.write_text('\n'.join([cmd for cmd in cls.cmds]), encoding='utf8')
+        cls.cmds.clear()
 
     @classmethod
     @contextmanager
@@ -38,15 +39,22 @@ class Collecter:
             cls._collecting = False
 
     @classmethod
-    def try_collect_command(cls, command: object):
-        from mcfp.command.commands import CommandBase
+    def try_collect_command(cls, cmd: object):
 
         if cls._collecting:
-            if isinstance(command, CommandBase):
-                cls.add_command(str(command))
+            if isinstance(cmd, command.CommandBase):
+                cls.add_command(str(cmd))
             else:
                 pass
         else:
             raise RuntimeError(
                 "Collecter is not collecting commands. Use Collecter.collect() context manager to enable command collection."
             )
+
+    @classmethod
+    def collect_assign(cls, target: Var, value: command.CommandBase):
+        # 暂时只处理简单的赋值
+        if isinstance(value, command.CommandBase):
+            if isinstance(target, Var):
+                cmd = command.Execute().store(Storage('var'), target.name).run(value)
+                cls.add_command(str(cmd))

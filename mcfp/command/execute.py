@@ -2,13 +2,13 @@ from dataclasses import dataclass, field
 from typing import Optional, Self
 
 from mcfp.command.commands import CommandBase
-from mcfp.command.util import Entity
+from mcfp.command.util import Entity, Storage, Target
 
 
 @dataclass
 class Execute(CommandBase):
     then: Optional[CommandBase] = None
-    subcommands: list[tuple[str, tuple[str | Entity]]] = field(default_factory=list)
+    subcommands: list[tuple[str, tuple[Target]]] = field(default_factory=list)
 
     def __str__(self) -> str:
         execute_str = 'execute'
@@ -19,6 +19,23 @@ class Execute(CommandBase):
         ), 'Execute command must have a "then" command to run.'
         return f'{execute_str} run {str(self.then)}'
 
+    def _add_subcommand(self, name: str, *args: Target):
+        self.subcommands.append((name, args))  # type: ignore
+
+    def as_(self, e: Entity) -> Self:
+        """
+        Add an `as` subcommand to the execute command.
+        """
+        self._add_subcommand('as', e)
+        return self
+
+    def at(self, e: Entity) -> Self:
+        """
+        Add an `at` subcommand to the execute command.
+        """
+        self._add_subcommand('at', e)
+        return self
+
     def run(self, then: CommandBase) -> Self:
         """
         Add a `run` subcommand to the execute command.
@@ -26,16 +43,16 @@ class Execute(CommandBase):
         self.then = then
         return self
 
-    def as_(self, selector: Entity) -> Self:
+    def store(
+        self, storage: Storage, path: str | None = None, succ: bool = False
+    ) -> Self:
         """
-        Add an `as` subcommand to the execute command.
+        Add a `store` subcommand to the execute command.
         """
-        self.subcommands.append(('as', (selector,)))
-        return self
-
-    def at(self, selector: Entity) -> Self:
-        """
-        Add an `at` subcommand to the execute command.
-        """
-        self.subcommands.append(('at', (selector,)))
+        args = []
+        args.append('success' if succ else 'result')
+        args.append(storage)
+        args.append(path)
+        args.extend(['int', 1])
+        self._add_subcommand('store', *args)
         return self

@@ -206,5 +206,5 @@ dev = ["black", "isort", "pytest"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.11"
-content-hash = "d780cc41f3207ac86e0038c86cf2f3c21d44dcd463c234a123352ba8abe6a408"
+python-versions = ">=3.12"
+content-hash = "a45ffccf828e4dde8b40b729f105aaca72c35da9c3c7c3f3b69cc4843fab1314"

@@ -6,31 +6,58 @@ from pathlib import Path
 
 import mcfp
 
+from .save2file import copy_built_ins
+
 
 class CommandTransformer(ast.NodeTransformer):
     def visit_With(self, node):
-        body = []
+        body: list[ast.stmt] = []
         body.append(
             ast.ImportFrom(
                 module='mcfp.collecter', names=[ast.alias(name='Collecter')], level=0
-            ),
+            )
+        )
+        body.append(
+            ast.ImportFrom(
+                module='mcfp.data_struct', names=[ast.alias(name='Var')], level=0
+            )
         )
         for n in node.body:
             if isinstance(n, ast.Expr) and isinstance(n.value, ast.Call):
-                body.append(
-                    ast.Expr(
-                        value=ast.Call(
-                            func=ast.Attribute(
-                                value=ast.Name(id='Collecter', ctx=ast.Load()),
-                                attr='try_collect_command',
-                                ctx=ast.Load(),
-                            ),
-                            args=[n.value],
-                        )
+                # 直接call型
+                n = ast.Expr(
+                    value=ast.Call(
+                        func=ast.Attribute(
+                            value=ast.Name(id='Collecter', ctx=ast.Load()),
+                            attr='try_collect_command',
+                            ctx=ast.Load(),
+                        ),
+                        args=[n.value],
                     )
                 )
-            else:
-                body.append(n)
+            elif isinstance(n, ast.Assign):
+                # 赋值型
+                a = ast.Assign(
+                    n.targets,
+                    ast.Call(
+                        func=ast.Name(id='Var', ctx=ast.Load()),
+                        args=[ast.Constant(value=n.targets[0].id)],  # type: ignore
+                    ),
+                )
+                body.append(a)
+
+                n = ast.Expr(
+                    ast.Call(
+                        func=ast.Attribute(
+                            ast.Name(id='Collecter', ctx=ast.Load()),
+                            attr='collect_assign',
+                            ctx=ast.Load(),
+                        ),
+                        args=[n.targets[0], n.value],
+                    )
+                )
+
+            body.append(n)
 
         node.body = body
         return node
@@ -74,19 +101,3 @@ def compile_all(dir: Path):
         if not fpath.name.startswith('_'):
             compile(fpath, dir)
     copy_built_ins()
-
-
-def copy_built_ins(target: Path | None = None):
-    if target is None:
-        target = mcfp.TargetPath.get()
-    built_in_dir = target / 'mcfp_gen' / 'function' / 'built_ins'
-    shutil.rmtree(built_in_dir, ignore_errors=True)
-    shutil.copytree(
-        Path(__file__).parent / '_built_in',
-        built_in_dir,
-        dirs_exist_ok=True,
-    )
-    from mcfp import DEBUG
-
-    if not DEBUG:
-        shutil.rmtree(built_in_dir / '_debug')

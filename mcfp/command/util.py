@@ -23,9 +23,9 @@ Entity = Selector | str
 
 @dataclass
 class Position:
-    x: int | str
-    y: int | str
-    z: int | str
+    x: float | str
+    y: float | str
+    z: float | str
 
     def __str__(self):
         return f'{self.x} {self.y} {self.z}'

@@ -105,6 +105,7 @@ def _(x: int, y: int, z: int, block: str, state: str = '', mode: str = 'replace'
 
 
 __all__ = [
+    'CommandBase',
     'Command',
     'setblock',
     'Function',
