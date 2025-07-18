@@ -1,12 +1,12 @@
 [project]
 name = "mcfp"
-version = "0.1.2"
+version = "0.1.4"
 description = "A py -> mcfunction transformer"
 authors = [{ name = "yuyi2439", email = "yuyi2439@qq.com" }]
 license = "MIT"
 readme = "README.md"
 keywords = ["minecraft", "minecraft-commands", "mcfunction"]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 [project.urls]
 Homepage = "https://github.com/yuyi2439/mcfp"

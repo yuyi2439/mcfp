@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import mcfp
-from mcfp.compiler import compile_all
+from mcfp.compile import compile_all
 
 # mcfp.DEBUG = True
 
