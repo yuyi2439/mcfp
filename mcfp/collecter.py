@@ -26,9 +26,7 @@ class Collecter:
         )
 
         target_path.parent.mkdir(parents=True, exist_ok=True)
-        target_path.write_text(
-            '\n'.join([cmd for cmd in cls.cmds]), encoding='utf8'
-        )
+        target_path.write_text('\n'.join([cmd for cmd in cls.cmds]), encoding='utf8')
         cls.cmds.clear()
 
     @classmethod
@@ -52,7 +50,7 @@ class Collecter:
             raise RuntimeError(
                 "Collecter is not collecting commands. Use Collecter.collect() context manager to enable command collection."
             )
-    
+
     @classmethod
     def collect_assign(cls, target: Var, value: command.CommandBase):
         # 暂时只处理简单的赋值

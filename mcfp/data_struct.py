@@ -9,6 +9,7 @@ class Var:
     def __str__(self) -> str:
         return self.name
 
+
 class List(list):
     def __init__(self, name: str, *args):
         super().__init__(*args)
